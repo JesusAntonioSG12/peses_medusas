@@ -1,0 +1,2 @@
+ALTO_DE_MEDUSA = int(67 * 1.5)
+ANCHO_DE_MEDUSA = int(77 * 1.5)
