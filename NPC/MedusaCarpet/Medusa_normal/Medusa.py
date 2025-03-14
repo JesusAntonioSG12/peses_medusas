@@ -117,7 +117,7 @@ class Medusa:
         self.mover_medusa(Velocidad, self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador)
         
     def check_collision(self, keys, other_rect_1, other_rect_2, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
-        if self.hitbox.colliderect((other_rect_1) or (other_rect_2)) and evento_1 == False:
+        if (self.hitbox.colliderect(other_rect_1) or self.hitbox.colliderect(other_rect_2)) and not evento_1:
             if (keys[pygame.K_SPACE] or keys[pygame.K_KP_0]) and self.Electrocutando == False:
                 print("Colision de mesdusa normal: ", self.cantidad_de_medusas_eliminadas)       
                 self.cantidad_de_medusas_eliminadas += 1     
