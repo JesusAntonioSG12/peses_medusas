@@ -110,7 +110,7 @@ class Medusa_Verde:
                 
     def mover_medusa_verde_aleatoriamente(self, Velocidad, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador):
         if Total_de_medusas_eliminadas >= 30:
-            if self.Destino_Aleatorio is None or (self.hitbox and self.hitbox.collidepoint(self.Destino_Aleatorio)):
+            if self.Destino_Aleatorio is None or (self.hitbox and self.medusa_verde_posicion.collidepoint(self.Destino_Aleatorio)):
                 self.Destino_X_Aleatorio = random.randint(Limite_Oeste, Limite_Este)
                 self.Destino_Y_Aleatorio = random.randint(Limite_Norte, Limite_Sur)
                 self.Destino_Aleatorio = (self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio)
@@ -162,18 +162,17 @@ class Medusa_Verde:
                 
 
     def dibujar_medusa_verde(self, keys, pantalla, Total_de_medusas_eliminadas, opciones_de_administrador_activadas):
-            if Total_de_medusas_eliminadas >= 30:
-                if self.medusa_eliminada == False:       
-                    self.update_hitbox()
-                    #Dibujar sprite de medusa corespondiente
-                    if self.Electrocutando == False:
-                        pantalla.blit(self.sprite_de_medusa_verde_A, self.medusa_verde_posicion)                
-                    else: 
-                        pantalla.blit(self.sprite_de_medusa_verde_B, self.medusa_verde_posicion)                
+        if Total_de_medusas_eliminadas >= 30:
+            if self.medusa_eliminada == False:       
+                self.update_hitbox()
+                #Dibujar sprite de medusa corespondiente
+                if self.Electrocutando == False:
+                    pantalla.blit(self.sprite_de_medusa_verde_A, self.medusa_verde_posicion)                
+                else: 
+                    pantalla.blit(self.sprite_de_medusa_verde_B, self.medusa_verde_posicion)                
                 
                 if keys[pygame.K_F3] and opciones_de_administrador_activadas == True:
-                    pygame.draw.rect(pantalla, (0, 0, 225), self.hitbox, 2)  # Dibuja la hitbox para visualizarla                  
-                    
+                    pygame.draw.rect(pantalla, (0, 0, 225), self.hitbox, 2)  # Dibuja la hitbox para visualizarla                                     
             else:
                 self.medusa_verde_posicion.x = 1000
                 self.Tiempo_que_lleva_eliminada_la_medusa += 1

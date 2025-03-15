@@ -118,11 +118,11 @@ def main():
         else:
             fondo.blit(fondo_pausa_1, (0, 0))
             pygame.display.update()
-        
+
         if pez.Vida <= 0:
             json.dump({"Total_de_medusas_eliminadas": 0}, open('savefile.json', 'w'))
             pygame.quit()
             sys.exit()
-
+        
 Ventana_de_inicio(fondo_imagen_de_inicio, fondo)
 main()
