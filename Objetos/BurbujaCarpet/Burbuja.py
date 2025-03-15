@@ -63,11 +63,12 @@ class Burbuja:
                 self.Burbuja_posicion.y -= 1
                 self.hitbox.center = self.Burbuja_posicion.center
 
-    def check_collision(self, vida, pez_hitboz, pez_cabeza_hitboz, keys):
-        if self.Burbuja_reventada == False and self.Total_de_medusas_eliminadas >= 5:
-            if self.hitbox.colliderect((pez_hitboz) or (pez_cabeza_hitboz)) and keys[pygame.K_SPACE]:
-                self.Burbuja_reventada = True
-                if self.Burbuja_reventada == True:
-                    self.tipo_de_burbuja = None
-                    self.Burbuja_posicion.y = 2000
-                    self.Burbuja_reventada = False
+    def check_collision(self, total_medusas_eliminadas ,vida, pez_hitboz, pez_cabeza_hitboz, event_key):
+        if self.Burbuja_reventada == False and total_medusas_eliminadas >= 5:
+            if self.hitbox.colliderect((pez_hitboz) or (pez_cabeza_hitboz)):
+                if event_key in [pygame.K_SPACE, pygame.K_KP_0]:
+                    self.Burbuja_reventada = True
+                    if self.Burbuja_reventada == True:
+                        self.tipo_de_burbuja = None
+                        self.Burbuja_posicion.y = 2000
+                        self.Burbuja_reventada = False

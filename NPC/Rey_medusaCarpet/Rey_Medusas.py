@@ -16,7 +16,7 @@ class Rey_Medusa:
         self.rey_medusa_posicion = self.sprite_de_rey_medusa_A.get_rect(center=(ANCHO_DE_MEDUSA + 350, ALTO_DE_MEDUSA + 60))
             
         # Crear la hitbox como un rectángulo independiente
-        self.hitbox = pygame.Rect(self.rey_medusa_posicion.x, self.rey_medusa_posicion.y, ANCHO_DE_MEDUSA*1.3, ALTO_DE_MEDUSA*2.5)
+        self.hitbox = None
             
         self.Destino = None
         self.Destino_Aleatorio = None
@@ -25,9 +25,14 @@ class Rey_Medusa:
         self.Electrocutando = False
         self.Tiempo_para_volver_a_resivir_daño = 0
         self.Sonido_de_eliminacion = pygame.mixer.Sound("Musica/Pop.wav")
-        
-        # Mover la hitbox junto con la medusa
-        self.hitbox.center = self.rey_medusa_posicion.center   
+          
+    
+    
+    def update_hitbox(self):
+        if not self.medusa_eliminada:
+            self.hitbox = pygame.Rect(self.rey_medusa_posicion.x, self.rey_medusa_posicion.y, ANCHO_DE_MEDUSA*1.3, ALTO_DE_MEDUSA*2.5) 
+            self.hitbox.center = self.rey_medusa_posicion.center
+        else: self.hitbox = None
     
     def Randomisar_Spawn_poin(self):
         self.Spawn_poin = random.randint(1,4)
@@ -100,28 +105,27 @@ class Rey_Medusa:
             self.mover_rey_medusa(Velocidad, self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio, posicion_x_de_jugador, posicion_y_de_jugador)
         
     def check_collision(self, keys, other_rect, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1, Total_de_medusas_eliminadas):
-        if Total_de_medusas_eliminadas >= 100 and self.rey_medusa_eliminada == False:
-            print("MEDUSA REY")
-            if self.hitbox.colliderect(other_rect) and evento_1 == False:
-                if (keys[pygame.K_SPACE] or keys[pygame.K_KP_0]) and self.Electrocutando == False and self.Tiempo_para_volver_a_resivir_daño <= 0:
-                    self.Vida -= 1
-                    self.Tiempo_para_volver_a_resivir_daño = 1000
-                if self.Vida <= 0:      
-                    self.rey_medusa_eliminada = True
-                    self.Sonido_de_eliminacion.play(1)
-                    
-                if self.Electrocutando == True and evento_1 == False:
-                    if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and self.rey_medusa_posicion.x < Limite_Este:
-                        self.rey_medusa_posicion.x += 20
-                    
-                    elif (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.rey_medusa_posiciont.x > Limite_Oeste:
-                        self.rey_medusa_posicion.x -= 20                
-                    
-                    elif (keys[pygame.K_s] or keys[pygame.K_DOWN]) and self.rey_medusa_posicion.y > Limite_Norte:
-                        self.rey_medusa_posicion.y += 20
-                    
-                    elif (keys[pygame.K_w] or keys[pygame.K_UP]) and self.rey_medusa_posicion.y < Limite_Sur:
-                        self.rey_medusa_posicion.y -= 20       
+        if self.hitbox and self.hitbox.colliderect(other_rect) and evento_1 == False:
+            if (keys in [pygame.K_SPACE, pygame.K_KP_0]) and self.Electrocutando == False and self.Tiempo_para_volver_a_resivir_daño <= 0:
+                self.Vida -= 1
+                self.Tiempo_para_volver_a_resivir_daño = 1000
+            if self.Vida <= 0:      
+                self.rey_medusa_eliminada = True
+                self.Sonido_de_eliminacion.play(1)
+                
+            if self.Electrocutando == True and evento_1 == False:
+                if (keys in [pygame.K_d, pygame.K_RIGHT]) and self.rey_medusa_posicion.x < Limite_Este:
+                    self.rey_medusa_posicion.x += 20
+                
+                elif (keys in [pygame.K_a, pygame.K_LEFT]) and self.rey_medusa_posiciont.x > Limite_Oeste:
+                    self.rey_medusa_posicion.x -= 20                
+                
+                elif (keys in [pygame.K_s, pygame.K_DOWN]) and self.rey_medusa_posicion.y > Limite_Norte:
+                    self.rey_medusa_posicion.y += 20
+                
+                elif (keys in [pygame.K_w, pygame.K_UP]) and self.rey_medusa_posicion.y < Limite_Sur:
+                    self.rey_medusa_posicion.y -= 20   
+                else: return
                     
     def Ataque_de_rey_medusa(self):
         if self.rey_medusa_eliminada == False:       
@@ -136,12 +140,14 @@ class Rey_Medusa:
         
     def dibujar_rey_medusa(self, keys, pantalla, Total_de_medusas_eliminadas, opciones_de_administrador_activadas):
         if Total_de_medusas_eliminadas >= 100:
-            if self.rey_medusa_eliminada == False:       
+            if self.rey_medusa_eliminada == False: 
+                self.update_hitbox()      
                 #Dibujar sprite de rey medusa corespondiente
                 if self.Electrocutando == False:
                     pantalla.blit(self.sprite_de_rey_medusa_A, self.rey_medusa_posicion)                
-                elif self.Electrocutando == True:
+                else:
                     pantalla.blit(self.sprite_de_rey_medusa_B, self.rey_medusa_posicion)                
+                
                 if self.Tiempo_para_volver_a_resivir_daño > 0:
                     self.Tiempo_para_volver_a_resivir_daño -= 1
                   

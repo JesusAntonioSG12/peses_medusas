@@ -91,39 +91,39 @@ class Jugador:
             
     def check_collision(self, keys, Total_de_medusas_eliminadas, medusa_hitbox, medusa_electrocutando, medusa_azul_hitbox, medusa_azul_electrocutando, medusa_verde_hitbox, medusa_verde_electrocutando, medusa_morada_hitbox, medusa_morada_electrocutando, rey_medusa_hitbox, rey_medusa_electrocutando, burbuja_hitbox, Burbuja_tipo):
         if self.Reciviendo_daño == False:
-            if ((self.hitbox.colliderect(medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_hitbox))) and medusa_electrocutando: 
+            if medusa_hitbox and ((self.hitbox.colliderect(medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_hitbox))) and medusa_electrocutando:
                 self.aplicar_dano(1, 25, keys, 2)
                 self.Reciviendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)  
-            elif ((self.hitbox.colliderect(medusa_azul_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_azul_hitbox))) and medusa_azul_electrocutando and Total_de_medusas_eliminadas >= 5:          
+            elif medusa_azul_hitbox and ((self.hitbox.colliderect(medusa_azul_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_azul_hitbox))) and medusa_azul_electrocutando and Total_de_medusas_eliminadas >= 5:
                 self.aplicar_dano(1, 25, keys)
                 self.Reciviendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
-            elif ((self.hitbox.colliderect(medusa_verde_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_verde_hitbox))) and medusa_verde_electrocutando and Total_de_medusas_eliminadas >= 30:
+            elif medusa_verde_hitbox and ((self.hitbox.colliderect(medusa_verde_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_verde_hitbox))) and medusa_verde_electrocutando and Total_de_medusas_eliminadas >= 30:
                 self.aplicar_dano(1, 25, keys)
                 self.Reciviendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
-            elif ((self.hitbox.colliderect(medusa_morada_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_morada_hitbox))) and medusa_morada_electrocutando and Total_de_medusas_eliminadas >= 50:
+            elif medusa_morada_hitbox and ((self.hitbox.colliderect(medusa_morada_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_morada_hitbox))) and medusa_morada_electrocutando and Total_de_medusas_eliminadas >= 50:
                 self.aplicar_dano(1, 25, keys)
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
                 self.Reciviendo_daño = True
-            elif ((self.hitbox.colliderect(rey_medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(rey_medusa_hitbox))) and rey_medusa_electrocutando and Total_de_medusas_eliminadas >= 50:
+            elif rey_medusa_hitbox and ((self.hitbox.colliderect(rey_medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(rey_medusa_hitbox))) and rey_medusa_electrocutando and Total_de_medusas_eliminadas >= 50:
                 self.aplicar_dano(1, 25, keys)
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
                 self.Reciviendo_daño = True
-            if ((self.hitbox.colliderect(burbuja_hitbox)) or (self.Cabeza_hitbox.colliderect(burbuja_hitbox))) and Total_de_medusas_eliminadas >= 5 and keys[pygame.K_SPACE]:   
+            if ((self.hitbox.colliderect(burbuja_hitbox)) or (self.Cabeza_hitbox.colliderect(burbuja_hitbox))) and Total_de_medusas_eliminadas >= 5 and keys in [pygame.K_SPACE]:   
                 if Burbuja_tipo == 2:
                     self.Vida += 1
                 elif Burbuja_tipo == 3:
                     self.Vida += 3
                     
         if self.Reciviendo_daño == True:
-            if self.tiempo_resiviendo_daño < 1000:
+            if self.tiempo_resiviendo_daño < 500:
                 self.tiempo_resiviendo_daño += 1
             else:
                 self.Reciviendo_daño = False

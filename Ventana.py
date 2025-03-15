@@ -51,19 +51,44 @@ pez = Jugador(1)
 corazon = Corazon(pez.Vida)
 burbuja = Burbuja()
 
+# Guardar y cargar el juego al iniciar
+Partida_guardada = json.load(open('savefile.json', 'r')) if "savefile.json" else {"Total_de_medusas_eliminadas": 0}
+modo_pausa = False
+
+def handle_events():
+    global modo_pausa
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            save_game({"Total_de_medusas_eliminadas": get_total_medusas()}, 'savefile.json')
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_ESCAPE:
+                modo_pausa = not modo_pausa
+                pygame.mixer.music.pause() if modo_pausa else pygame.mixer.music.unpause()
+                
+        # Pasar evento a check_collision para asegurar que solo ocurre una vez por pulsación
+            if event.key in [pygame.K_SPACE, pygame.K_KP_0]:
+                Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, event.key, get_total_medusas(), fondo)
+
+def update_game():
+    if not modo_pausa:
+        Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas(), fondo)
+        Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
+        Ataque_de_NPCS(medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, pez, get_total_medusas())
+        Checar_vida_de_jugadores(pez)
+        
+def render_game():
+    fondo.blit(fondo_imagen_1, (0, 0))
+    Dibujar_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, corazon, fondo, pygame.key.get_pressed(), get_total_medusas(), opciones_de_administrador_activadas)
+    pygame.display.update()
+    
+def get_total_medusas():
+    return medusa.cantidad_de_medusas_eliminadas + medusa_azul.cantidad_de_medusas_azules_eliminadas + medusa_verde.cantidad_de_medusas_verdees_eliminadas + medusa_morada.cantidad_de_medusas_moradas_eliminadas
+
 # Función para guardar el estado del juego
 def save_game(data, filename):
-    with open(filename, 'w') as file:
-        json.dump(data, file)
-
-# Función para cargar el estado del juego
-def load_game(filename):
-    try:
-        with open(filename, 'r') as file:
-            Partida_guardada = json.load(file)
-            return Partida_guardada
-    except FileNotFoundError:
-        return {"Total_de_medusas_eliminadas": 0}
+    json.dump(data, open(filename, 'w'))
 
 # Función para borrar el estado del juego
 def borrar_partida(data, filename):
@@ -82,63 +107,20 @@ sonido_fondo_2.play(-1)
 pygame.mixer.music.load("Musica/audio1.wav")
 pygame.mixer.music.play(-1)
 
-# Guardar y cargar el juego al iniciar
-Partida_guardada = load_game('savefile.json')
+
 def main():
-    modo_pausa = False
     while True:
-        Total_de_medusas_eliminadas = (
-        medusa.cantidad_de_medusas_eliminadas +
-        medusa_azul.cantidad_de_medusas_azules_eliminadas +
-        medusa_verde.cantidad_de_medusas_verdees_eliminadas +
-        medusa_morada.cantidad_de_medusas_moradas_eliminadas 
-        #+ 50
-)
-        keys = pygame.key.get_pressed()
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                save_game({"Total_de_medusas_eliminadas": Total_de_medusas_eliminadas}, 'savefile.json')
-                pygame.quit()
-                sys.exit()
-            elif keys[pygame.K_ESCAPE]:
-                if not modo_pausa:
-                    modo_pausa = True
-                    pygame.mixer.music.pause()
-                    save_game({"Total_de_medusas_eliminadas": Total_de_medusas_eliminadas}, 'savefile.json')
-                else:
-                    modo_pausa = False
-                    pygame.mixer.music.unpause()
-            
+        pygame.time.set_timer(pygame.USEREVENT, 100)
+        handle_events()
         if not modo_pausa:
-            # Dibuja la imagen de fondo y entidades
-            fondo.blit(fondo_imagen_1, (0, 0))
-            Dibujar_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, corazon, fondo, keys, Total_de_medusas_eliminadas, opciones_de_administrador_activadas)
-            # Dar comportamiento, coliciones y checar vida de entidades
-            Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, keys, Total_de_medusas_eliminadas, fondo)
-            
-            Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, keys, Total_de_medusas_eliminadas)
-
-            Ataque_de_NPCS(medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, pez, Total_de_medusas_eliminadas)
-
-            Checar_vida_de_jugadores(pez)
-
-            # Actualiza la pantalla
-            pygame.display.update()            
-            # Fin del juego
-            if rey_medusa.Vida <= 0:
-                if rey_medusa.rey_medusa_posicion.y <= 2500:
-                    rey_medusa.rey_medusa_posicion.y += 2
-                else:
-                    return False
+            update_game()
+            render_game()
         else:
             fondo.blit(fondo_pausa_1, (0, 0))
-            # Actualiza la pantalla
             pygame.display.update()
-
-        # No guardar la información si el jugador muere
+        
         if pez.Vida <= 0:
-            borrar_partida({"Total_de_medusas_eliminadas": 0}, 'savefile.json')
+            json.dump({"Total_de_medusas_eliminadas": 0}, open('savefile.json', 'w'))
             pygame.quit()
             sys.exit()
 

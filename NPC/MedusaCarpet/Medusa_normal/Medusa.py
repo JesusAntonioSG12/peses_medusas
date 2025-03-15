@@ -16,7 +16,7 @@ class Medusa:
         self.medusa_posicion = self.sprite_de_medusa_A.get_rect(center=(465.5, 160.5))
         
         # Crear la hitbox como un rectángulo independiente
-        self.hitbox = pygame.Rect(self.medusa_posicion.x, self.medusa_posicion.y, ANCHO_DE_MEDUSA*.55, ALTO_DE_MEDUSA)
+        self.hitbox = None
         
         self.tipo_de_medusa = "normal"
         self.Destino = None
@@ -27,10 +27,13 @@ class Medusa:
         self.Electrocutando = False
         self.Sonido_de_eliminacion = pygame.mixer.Sound("Musica/Pop.wav")
         self.Genero = 1
-        
-        # Mover la hitbox junto con la medusa
-        self.hitbox.center = self.medusa_posicion.center
 
+    
+    def update_hitbox(self):
+        if not self.medusa_eliminada:
+            self.hitbox = pygame.Rect(self.medusa_posicion.x, self.medusa_posicion.y, ANCHO_DE_MEDUSA*.55, ALTO_DE_MEDUSA)
+            self.hitbox.center = self.medusa_posicion.center
+        else: self.hitbox = None
     
     def Randomisar_genero(self):
         self.Genero = random.randint(1,2)
@@ -105,8 +108,7 @@ class Medusa:
                     elif posicion_y_de_jugador > self.medusa_posicion.y:
                         self.medusa_posicion.y += Velocidad
                         
-        # Mover la hitbox junto con la medusa
-        self.hitbox.center = self.medusa_posicion.center
+     
                 
     def mover_medusa_aleatoriamente(self, Velocidad, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador):
         if self.Destino_Aleatorio is None or self.medusa_posicion.collidepoint(self.Destino_Aleatorio):
@@ -116,25 +118,25 @@ class Medusa:
         
         self.mover_medusa(Velocidad, self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador)
         
-    def check_collision(self, keys, other_rect_1, other_rect_2, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
-        if (self.hitbox.colliderect(other_rect_1) or self.hitbox.colliderect(other_rect_2)) and not evento_1:
-            if (keys[pygame.K_SPACE] or keys[pygame.K_KP_0]) and self.Electrocutando == False:
-                print("Colision de mesdusa normal: ", self.cantidad_de_medusas_eliminadas)       
+    def check_collision(self, event_key, other_rect_1, other_rect_2, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
+        if self.hitbox and (self.hitbox.colliderect(other_rect_1) or self.hitbox.colliderect(other_rect_2)) and not evento_1:
+            if event_key in [pygame.K_SPACE, pygame.K_KP_0] and not self.Electrocutando:     
                 self.cantidad_de_medusas_eliminadas += 1     
                 self.medusa_eliminada = True
                 self.Sonido_de_eliminacion.play(1)
+                evento_1 = True
                 
             elif self.Electrocutando == True and evento_1 == False:
-                if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and self.medusa_posicion.x < Limite_Este:
+                if (event_key in [pygame.K_d, pygame.K_RIGHT]) and self.medusa_posicion.x < Limite_Este:
                     self.medusa_posicion.x += 25
                 
-                elif (keys[pygame.K_a] or keys[pygame.K_LEFT]) and self.medusa_posicion.x > Limite_Oeste:
+                elif (event_key in [pygame.K_a, pygame.K_LEFT]) and self.medusa_posicion.x > Limite_Oeste:
                     self.medusa_posicion.x -= 25                
                 
-                if (keys[pygame.K_s] or keys[pygame.K_DOWN]) and self.medusa_posicion.y > Limite_Norte:
+                if (event_key in [pygame.K_s, pygame.K_DOWN]) and self.medusa_posicion.y > Limite_Norte:
                     self.medusa_posicion.y += 25
                 
-                elif (keys[pygame.K_w] or keys[pygame.K_UP])and self.medusa_posicion.y < Limite_Sur:
+                elif (event_key in [pygame.K_w,pygame.K_UP])and self.medusa_posicion.y < Limite_Sur:
                     self.medusa_posicion.y -= 25 
                 else:
                     return
@@ -152,11 +154,13 @@ class Medusa:
                     self.Electrocutando = False
         
     def dibujar_medusa(self, keys, pantalla, opciones_de_administrador_activadas):
-        if self.medusa_eliminada == False:       
+        if not self.medusa_eliminada:       
+            self.update_hitbox()
+
             #Dibujar sprite de medusa corespondiente
-            if self.Electrocutando == False:
+            if not self.Electrocutando:
                 pantalla.blit(self.sprite_de_medusa_A, self.medusa_posicion)                
-            if self.Electrocutando == True:
+            else:
                 pantalla.blit(self.sprite_de_medusa_B, self.medusa_posicion)                
             
             if keys[pygame.K_F3] and opciones_de_administrador_activadas == True:
