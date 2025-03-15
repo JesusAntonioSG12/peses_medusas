@@ -24,7 +24,7 @@ from Objetos.BurbujaCarpet.Burbuja import Burbuja
 # importar constantes
 from VentanaCarpet import Constantes_de_pantalla
 
-opciones_de_administrador_activadas = False
+opciones_de_administrador_activadas = True
 
 pygame.init()
 
