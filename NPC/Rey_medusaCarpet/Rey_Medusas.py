@@ -29,7 +29,7 @@ class Rey_Medusa:
     
     
     def update_hitbox(self):
-        if not self.medusa_eliminada:
+        if not self.rey_medusa_eliminada:
             self.hitbox = pygame.Rect(self.rey_medusa_posicion.x, self.rey_medusa_posicion.y, ANCHO_DE_MEDUSA*1.3, ALTO_DE_MEDUSA*2.5) 
             self.hitbox.center = self.rey_medusa_posicion.center
         else: self.hitbox = None
@@ -92,8 +92,6 @@ class Rey_Medusa:
             elif posicion_y_de_jugador > self.rey_medusa_posicion.y:
                 self.rey_medusa_posicion.y += Velocidad * .5
                         
-        # Mover la hitbox junto con la medusa
-        self.hitbox.center = self.rey_medusa_posicion.center
                 
     def mover_rey_medusa_aleatoriamente(self, Velocidad, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador):
         if Total_de_medusas_eliminadas >= 100 and self.rey_medusa_eliminada == False:
