@@ -84,7 +84,7 @@ def render_game():
     pygame.display.update()
     
 def get_total_medusas():
-    return medusa.cantidad_de_medusas_eliminadas + medusa_azul.cantidad_de_medusas_azules_eliminadas + medusa_verde.cantidad_de_medusas_verdees_eliminadas + medusa_morada.cantidad_de_medusas_moradas_eliminadas
+    return medusa.cantidad_de_medusas_eliminadas + medusa_azul.cantidad_de_medusas_azules_eliminadas + medusa_verde.cantidad_de_medusas_verdes_eliminadas + medusa_morada.cantidad_de_medusas_moradas_eliminadas + Partida_guardada["Total_de_medusas_eliminadas"]
 
 # Función para guardar el estado del juego
 def save_game(data, filename):

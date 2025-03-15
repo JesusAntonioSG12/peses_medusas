@@ -4,7 +4,7 @@ from NPC.MedusaCarpet.Medusa_normal.Constantes_de_medusa import ALTO_DE_MEDUSA, 
 
 class Medusa_Verde:
     def __init__(self):
-        self.cantidad_de_medusas_verdees_eliminadas = 0
+        self.cantidad_de_medusas_verdes_eliminadas = 0
         
         # Cargar y escalar el sprite
         self.sprite_de_medusa_verde_A = pygame.image.load("NPC/MedusaCarpet/Medusa_Verde/Medusa_Verde_sprite/Medusa_verde1.png")
@@ -117,10 +117,10 @@ class Medusa_Verde:
             
             self.mover_medusa(Velocidad, self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador)
         
-    def check_collision(self, keys, other_rect, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste,Total_de_medusas_eliminadas, evento_1):
+    def check_collision(self, keys, other_rect, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
         if self.hitbox and self.hitbox.colliderect(other_rect) and evento_1 == False:
             if (keys in [pygame.K_SPACE, pygame.K_KP_0]) and not self.Electrocutando:
-                    self.cantidad_de_medusas_verdees_eliminadas +=1            
+                    self.cantidad_de_medusas_verdes_eliminadas +=1            
                     self.medusa_eliminada = True
                     self.Sonido_de_eliminacion.play(1)
                     

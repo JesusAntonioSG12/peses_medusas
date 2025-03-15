@@ -118,8 +118,8 @@ class Medusa:
         
         self.mover_medusa(Velocidad, self.Destino_X_Aleatorio, self.Destino_Y_Aleatorio, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador)
         
-    def check_collision(self, event_key, other_rect_1, other_rect_2, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
-        if self.hitbox and (self.hitbox.colliderect(other_rect_1) or self.hitbox.colliderect(other_rect_2)) and not evento_1:
+    def check_collision(self, event_key, other_rect_1, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, evento_1):
+        if self.hitbox and (self.hitbox.colliderect(other_rect_1)) and not evento_1:
             if event_key in [pygame.K_SPACE, pygame.K_KP_0] and not self.Electrocutando:     
                 self.cantidad_de_medusas_eliminadas += 1     
                 self.medusa_eliminada = True

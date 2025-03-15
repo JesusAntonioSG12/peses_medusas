@@ -17,8 +17,8 @@ class Jugador:
         self.Jugador1_imagen_D = pygame.image.load("PezCarpet/PezCarpet_Sprites/regular_fish_sprite/Pez_4.png")
         self.Jugador1_imagen_D = pygame.transform.scale(self.Jugador1_imagen_D, (ANCHO_DE_PERSONAJE * 1.40, ANCHO_DE_PERSONAJE * 1.5))
         
-        self.Reciviendo_daño = False              
-        self.tiempo_resiviendo_daño = 0
+        self.Recibiendo_daño = False              
+        self.tiempo_resibiendo_daño = 0
         self.posicion_de_jugador = self.Jugador1_imagen_A.get_rect()
         self.posicion_de_jugador.center = (ANCHO_DE_PERSONAJE + 10, ALTO_DE_PERSONAJE + 10)
         self.velocidad_de_jugador = 1
@@ -90,51 +90,51 @@ class Jugador:
 
             
     def check_collision(self, keys, Total_de_medusas_eliminadas, medusa_hitbox, medusa_electrocutando, medusa_azul_hitbox, medusa_azul_electrocutando, medusa_verde_hitbox, medusa_verde_electrocutando, medusa_morada_hitbox, medusa_morada_electrocutando, rey_medusa_hitbox, rey_medusa_electrocutando, burbuja_hitbox, Burbuja_tipo):
-        if self.Reciviendo_daño == False:
+        if self.Recibiendo_daño == False:
             if medusa_hitbox and ((self.hitbox.colliderect(medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_hitbox))) and medusa_electrocutando:
                 self.aplicar_dano(1, 25, keys, 2)
-                self.Reciviendo_daño = True
+                self.Recibiendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)  
             elif medusa_azul_hitbox and ((self.hitbox.colliderect(medusa_azul_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_azul_hitbox))) and medusa_azul_electrocutando and Total_de_medusas_eliminadas >= 5:
                 self.aplicar_dano(1, 25, keys)
-                self.Reciviendo_daño = True
+                self.Recibiendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
             elif medusa_verde_hitbox and ((self.hitbox.colliderect(medusa_verde_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_verde_hitbox))) and medusa_verde_electrocutando and Total_de_medusas_eliminadas >= 30:
                 self.aplicar_dano(1, 25, keys)
-                self.Reciviendo_daño = True
+                self.Recibiendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
             elif medusa_morada_hitbox and ((self.hitbox.colliderect(medusa_morada_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_morada_hitbox))) and medusa_morada_electrocutando and Total_de_medusas_eliminadas >= 50:
                 self.aplicar_dano(1, 25, keys)
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
-                self.Reciviendo_daño = True
+                self.Recibiendo_daño = True
             elif rey_medusa_hitbox and ((self.hitbox.colliderect(rey_medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(rey_medusa_hitbox))) and rey_medusa_electrocutando and Total_de_medusas_eliminadas >= 50:
                 self.aplicar_dano(1, 25, keys)
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)
-                self.Reciviendo_daño = True
+                self.Recibiendo_daño = True
             if ((self.hitbox.colliderect(burbuja_hitbox)) or (self.Cabeza_hitbox.colliderect(burbuja_hitbox))) and Total_de_medusas_eliminadas >= 5 and keys in [pygame.K_SPACE]:   
                 if Burbuja_tipo == 2:
                     self.Vida += 1
                 elif Burbuja_tipo == 3:
                     self.Vida += 3
                     
-        if self.Reciviendo_daño == True:
-            if self.tiempo_resiviendo_daño < 500:
-                self.tiempo_resiviendo_daño += 1
+        if self.Recibiendo_daño == True:
+            if self.tiempo_resibiendo_daño < 500:
+                self.tiempo_resibiendo_daño += 1
             else:
-                self.Reciviendo_daño = False
-                self.tiempo_resiviendo_daño = 0       
+                self.Recibiendo_daño = False
+                self.tiempo_resibiendo_daño = 0       
 
 
     def check_hp(self):
         # Checar que la Vida no se salga de los parametros (menor que 0)
         if self.Vida <= 0:
             self.Vida = 0
-            self.Reciviendo_daño = True
+            self.Recibiendo_daño = True
             if self.posicion_de_jugador.y <= 1000:
                 self.posicion_de_jugador.y += 2           
             else:
@@ -150,12 +150,12 @@ class Jugador:
             
     def dibujar_jugador(self, pantalla, keys, opciones_de_administrador_activadas):
         if self.tipo_de_jugador == 1:
-            if self.Reciviendo_daño == False:
+            if self.Recibiendo_daño == False:
                 if self.mirar_a == "derecha":
                     pantalla.blit(self.Jugador1_imagen_A, self.posicion_de_jugador)
                 elif self.mirar_a == "izquierda":
                     pantalla.blit(self.Jugador1_imagen_B, self.posicion_de_jugador)
-            elif self.Reciviendo_daño == True:
+            elif self.Recibiendo_daño == True:
                 if self.mirar_a == "derecha":
                     pantalla.blit(self.Jugador1_imagen_C, self.posicion_de_jugador)
                 elif self.mirar_a == "izquierda":
