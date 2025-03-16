@@ -5,7 +5,7 @@ import pygame.locals
 from PezCarpet.Constantes_de_pez import ALTO_DE_PERSONAJE, ANCHO_DE_PERSONAJE
 
 class Jugador:
-    def __init__(self, tipo_de_jugador):
+    def __init__(self, tipo_de_jugador, vida_inicial):
         # Cargar sprite
         self.tipo_de_jugador = tipo_de_jugador
         self.Jugador1_imagen_A = pygame.image.load("PezCarpet/PezCarpet_Sprites/regular_fish_sprite/Pez_1.png")
@@ -22,7 +22,7 @@ class Jugador:
         self.posicion_de_jugador = self.Jugador1_imagen_A.get_rect()
         self.posicion_de_jugador.center = (ANCHO_DE_PERSONAJE + 10, ALTO_DE_PERSONAJE + 10)
         self.velocidad_de_jugador = 1
-        self.Vida = 5
+        self.Vida = vida_inicial  # Inicializar con la vida proporcionada
         self.mirar_a = "derecha"
         self.sonido_electrocucion_1 = pygame.mixer.Sound("Musica/electrocutando1.wav")
         self.sonido_electrocucion_2 = pygame.mixer.Sound("Musica/electrocutando2.wav")
@@ -31,6 +31,7 @@ class Jugador:
         self.hitbox = pygame.Rect(self.posicion_de_jugador.x, self.posicion_de_jugador.y, ANCHO_DE_PERSONAJE + 20, ALTO_DE_PERSONAJE)
         self.hitbox.center = self.posicion_de_jugador.center
         self.Cabeza_hitbox = pygame.Rect(self.posicion_de_jugador.x + 20, self.posicion_de_jugador.y + 20, ANCHO_DE_PERSONAJE - 30, ALTO_DE_PERSONAJE)
+
         
     def mover_jugador(self, keys, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste):
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:

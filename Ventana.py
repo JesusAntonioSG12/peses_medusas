@@ -39,6 +39,8 @@ fondo_imagen_1 = pygame.transform.scale(fondo_imagen_1, (Constantes_de_pantalla.
 fondo_pausa_1 = pygame.image.load("VentanaCarpet/imagenes/fondo_pausa1.PNG")
 fondo_pausa_1 = pygame.transform.scale(fondo_pausa_1, (Constantes_de_pantalla.ANCHO_DE_PANTALLA, Constantes_de_pantalla.ALTO_DE_PANTALLA))
 
+# Guardar y cargar el juego al iniciar
+Partida_guardada = json.load(open('savefile.json', 'r')) if "savefile.json" else {"Total_de_medusas_eliminadas": 0}
 # Crea una instancia de la clase Jugador y las clases Medusas
 medusa = Medusa()
 medusa_azul = Medusa_Azul()
@@ -46,20 +48,20 @@ medusa_verde = Medusa_Verde()
 medusa_morada = Medusa_Morada()
 rey_medusa = Rey_Medusa()
 
-pez = Jugador(1)
+pez = Jugador(1, Partida_guardada["Vida_del_jugador"])
+
 # Crear instancia de las clases de los objetos
 corazon = Corazon(pez.Vida)
 burbuja = Burbuja()
 
-# Guardar y cargar el juego al iniciar
-Partida_guardada = json.load(open('savefile.json', 'r')) if "savefile.json" else {"Total_de_medusas_eliminadas": 0}
 modo_pausa = False
 
 def handle_events():
     global modo_pausa
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            save_game({"Total_de_medusas_eliminadas": get_total_medusas()}, 'savefile.json')
+            save_game({"Total_de_medusas_eliminadas": get_total_medusas(), "Vida_del_jugador": pez.Vida}, 'savefile.json')
+            
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN: 
@@ -89,12 +91,7 @@ def get_total_medusas():
 # Función para guardar el estado del juego
 def save_game(data, filename):
     json.dump(data, open(filename, 'w'))
-
-# Función para borrar el estado del juego
-def borrar_partida(data, filename):
-    data = {"Total_de_medusas_eliminadas": 0}
-    with open(filename, 'w') as file:
-        json.dump(data, file)
+    
 
 # Configura la ventana (imágenes y sonidos)
 generar_icono_de_esquina()
@@ -110,6 +107,7 @@ pygame.mixer.music.play(-1)
 
 def main():
     while True:
+        get_total_medusas()
         pygame.time.set_timer(pygame.USEREVENT, 100)
         handle_events()
         if not modo_pausa:
@@ -120,7 +118,7 @@ def main():
             pygame.display.update()
 
         if pez.Vida <= 0:
-            json.dump({"Total_de_medusas_eliminadas": 0}, open('savefile.json', 'w'))
+            json.dump({"Total_de_medusas_eliminadas": 0,"Vida_del_jugador": 5}, open('savefile.json', 'w'))
             pygame.quit()
             sys.exit()
         
