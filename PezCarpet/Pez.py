@@ -135,11 +135,7 @@ class Jugador:
         # Checar que la Vida no se salga de los parametros (menor que 0)
         if self.Vida <= 0:
             self.Vida = 0
-            self.Recibiendo_daño = True
-            if self.posicion_de_jugador.y <= 1000:
-                self.posicion_de_jugador.y += 2           
-            else:
-                pygame.quit()     
+            self.Recibiendo_daño = True            
         # Checar que la Vida no se salga de los parametros (mayor que 5)
         elif self.Vida > 5:
             self.Vida = 5

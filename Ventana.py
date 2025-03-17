@@ -75,10 +75,16 @@ def handle_events():
 
 def update_game():
     if not modo_pausa:
+        # Verifica si get_total_medusas() alcanza un valor específico y cambia el audio
+        if get_total_medusas() >= 100:  # Cambia "100" por el número deseado
+            pygame.mixer.music.load("Musica/audio_jefe1.wav")
+            pygame.mixer.music.play(-1)
+        
         Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas(), fondo)
         Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
         Ataque_de_NPCS(medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, pez, get_total_medusas())
         Checar_vida_de_jugadores(pez)
+
         
 def render_game():
     fondo.blit(fondo_imagen_1, (0, 0))
@@ -116,11 +122,14 @@ def main():
         else:
             fondo.blit(fondo_pausa_1, (0, 0))
             pygame.display.update()
-
+        
         if pez.Vida <= 0:
             json.dump({"Total_de_medusas_eliminadas": 0,"Vida_del_jugador": 5}, open('savefile.json', 'w'))
-            pygame.quit()
-            sys.exit()
-        
+
+            if pez.posicion_de_jugador.y <= 1000:
+                pez.posicion_de_jugador.y += 2 
+            else:
+                pygame.quit()
+                sys.exit()
 Ventana_de_inicio(fondo_imagen_de_inicio, fondo)
 main()
