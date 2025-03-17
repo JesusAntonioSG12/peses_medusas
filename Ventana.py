@@ -76,9 +76,9 @@ def handle_events():
 def update_game():
     if not modo_pausa:
         # Verifica si get_total_medusas() alcanza un valor específico y cambia el audio
-        if get_total_medusas() >= 100:  # Cambia "100" por el número deseado
+        if get_total_medusas() == 99:  # Cambia "100" por el número deseado
             pygame.mixer.music.load("Musica/audio_jefe1.wav")
-            pygame.mixer.music.play(-1)
+            pygame.mixer.music.play()
         
         Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas(), fondo)
         Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
