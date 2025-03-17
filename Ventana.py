@@ -72,13 +72,16 @@ def handle_events():
         # Pasar evento a check_collision para asegurar que solo ocurre una vez por pulsación
             if event.key in [pygame.K_SPACE, pygame.K_KP_0]:
                 Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, event.key, get_total_medusas(), fondo)
+audio_jefe_reproducido = False
 
 def update_game():
+    global audio_jefe_reproducido
     if not modo_pausa:
         # Verifica si get_total_medusas() alcanza un valor específico y cambia el audio
-        if get_total_medusas() == 99:  # Cambia "100" por el número deseado
+        if get_total_medusas() == 100 and not audio_jefe_reproducido:  # Cambia "100" por el número deseado
             pygame.mixer.music.load("Musica/audio_jefe1.wav")
             pygame.mixer.music.play()
+            audio_jefe_reproducido = True
         
         Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas(), fondo)
         Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
