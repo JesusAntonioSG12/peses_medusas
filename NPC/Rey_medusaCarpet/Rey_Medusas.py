@@ -3,8 +3,8 @@ import random
 from NPC.MedusaCarpet.Medusa_normal.Constantes_de_medusa import ALTO_DE_MEDUSA, ANCHO_DE_MEDUSA
 
 class Rey_Medusa:
-    def __init__(self):
-        self.Vida = 100
+    def __init__(self, Vida):
+        self.Vida = Vida
                    
             #Crear sprites
         self.sprite_de_rey_medusa_A = pygame.image.load("NPC/Rey_medusaCarpet/Rey_medusaCarpet_sprite/rey_medusa1.png")
@@ -21,15 +21,13 @@ class Rey_Medusa:
         self.Destino = None
         self.Destino_Aleatorio = None
         self.Tiempo_sin_electrocutar = 0
-        self.rey_medusa_eliminada = False
+        self.rey_medusa_eliminado = False
         self.Electrocutando = False
         self.Tiempo_para_volver_a_resivir_daño = 0
-        self.Sonido_de_eliminacion = pygame.mixer.Sound("Musica/Pop.wav")
-          
-    
+             
     
     def update_hitbox(self):
-        if not self.rey_medusa_eliminada:
+        if not self.rey_medusa_eliminado:
             self.hitbox = pygame.Rect(self.rey_medusa_posicion.x, self.rey_medusa_posicion.y, ANCHO_DE_MEDUSA*1.3, ALTO_DE_MEDUSA*2.5) 
             self.hitbox.center = self.rey_medusa_posicion.center
         else: self.hitbox = None
@@ -47,54 +45,70 @@ class Rey_Medusa:
                                      
                 
     def mover_rey_medusa(self, Velocidad, Destino_X, Destino_Y, posicion_x_de_jugador, posicion_y_de_jugador):
-        if self.Electrocutando == False:
-            if self.Vida > 30:
-                self.Destino = (Destino_X, Destino_Y)
+        if self.Vida > 0:
+            if self.Electrocutando == False:
+                if self.Vida > 30:
+                    self.Destino = (Destino_X, Destino_Y)
+                    
+                    if self.Destino != self.rey_medusa_posicion.topleft:
+                        if self.rey_medusa_posicion.x < Destino_X:
+                            self.rey_medusa_posicion.x += Velocidad
+                        elif self.rey_medusa_posicion.x > Destino_X:
+                            self.rey_medusa_posicion.x -= Velocidad
+                            
+                        if self.rey_medusa_posicion.y < Destino_Y:
+                            self.rey_medusa_posicion.y += Velocidad
+                        elif self.rey_medusa_posicion.y > Destino_Y:
+                            self.rey_medusa_posicion.y -= Velocidad
+                else: #Correr si se ve bulnerable y debil
+                    if posicion_x_de_jugador > 0:
+                        Destino_X -= Destino_X * 2
+                    else:
+                        Destino_X += Destino_X * 2
+                    
+                    if posicion_y_de_jugador > 0:
+                        Destino_Y -= Destino_Y * 2
+                    else:
+                        Destino_Y += Destino_Y * 2
+                    if self.Destino != self.rey_medusa_posicion.topleft:
+                        if self.rey_medusa_posicion.x < Destino_X:
+                            self.rey_medusa_posicion.x += Velocidad*2
+                        elif self.rey_medusa_posicion.x > Destino_X:
+                            self.rey_medusa_posicion.x -= Velocidad*2
+                            
+                        if self.rey_medusa_posicion.y < Destino_Y:
+                            self.rey_medusa_posicion.y += Velocidad*2
+                        elif self.rey_medusa_posicion.y > Destino_Y:
+                            self.rey_medusa_posicion.y -= Velocidad*2
+            else:            
+                if posicion_x_de_jugador < self.rey_medusa_posicion.x:
+                    self.rey_medusa_posicion.x -= Velocidad * .5
+                elif posicion_x_de_jugador > self.rey_medusa_posicion.x:
+                        self.rey_medusa_posicion.x += Velocidad * .5
                 
-                if self.Destino != self.rey_medusa_posicion.topleft:
-                    if self.rey_medusa_posicion.x < Destino_X:
-                        self.rey_medusa_posicion.x += Velocidad
-                    elif self.rey_medusa_posicion.x > Destino_X:
-                        self.rey_medusa_posicion.x -= Velocidad
-                        
-                    if self.rey_medusa_posicion.y < Destino_Y:
-                        self.rey_medusa_posicion.y += Velocidad
-                    elif self.rey_medusa_posicion.y > Destino_Y:
-                        self.rey_medusa_posicion.y -= Velocidad
-            else: #Correr si se ve bulnerable y debil
-                if posicion_x_de_jugador > 0:
-                    Destino_X -= Destino_X * 2
-                else:
-                    Destino_X += Destino_X * 2
-                
-                if posicion_y_de_jugador > 0:
-                    Destino_Y -= Destino_Y * 2
-                else:
-                    Destino_Y += Destino_Y * 2
-                if self.Destino != self.rey_medusa_posicion.topleft:
-                    if self.rey_medusa_posicion.x < Destino_X:
-                        self.rey_medusa_posicion.x += Velocidad*2
-                    elif self.rey_medusa_posicion.x > Destino_X:
-                        self.rey_medusa_posicion.x -= Velocidad*2
-                        
-                    if self.rey_medusa_posicion.y < Destino_Y:
-                        self.rey_medusa_posicion.y += Velocidad*2
-                    elif self.rey_medusa_posicion.y > Destino_Y:
-                        self.rey_medusa_posicion.y -= Velocidad*2
-        else:            
-            if posicion_x_de_jugador < self.rey_medusa_posicion.x:
-                self.rey_medusa_posicion.x -= Velocidad * .5
-            elif posicion_x_de_jugador > self.rey_medusa_posicion.x:
-                    self.rey_medusa_posicion.x += Velocidad * .5
+                if posicion_y_de_jugador < self.rey_medusa_posicion.y:
+                    self.rey_medusa_posicion.y -= Velocidad * .5
+                elif posicion_y_de_jugador > self.rey_medusa_posicion.y:
+                    self.rey_medusa_posicion.y += Velocidad * .5
+        else:
+            Destino_Y = 2000
+            Destino_X = self.rey_medusa_posicion.x
             
-            if posicion_y_de_jugador < self.rey_medusa_posicion.y:
-                self.rey_medusa_posicion.y -= Velocidad * .5
-            elif posicion_y_de_jugador > self.rey_medusa_posicion.y:
-                self.rey_medusa_posicion.y += Velocidad * .5
-                        
+            if self.Destino != self.rey_medusa_posicion.topleft:
+                if self.rey_medusa_posicion.x < Destino_X:
+                    self.rey_medusa_posicion.x += Velocidad
+                elif self.rey_medusa_posicion.x > Destino_X:
+                    self.rey_medusa_posicion.x -= Velocidad
+                            
+                if self.rey_medusa_posicion.y < Destino_Y:
+                    self.rey_medusa_posicion.y += Velocidad
+                elif self.rey_medusa_posicion.y > Destino_Y:
+                    self.rey_medusa_posicion.y -= Velocidad
+
+
                 
     def mover_rey_medusa_aleatoriamente(self, Velocidad, Limite_Norte, Limite_Sur, Limite_Este, Limite_Oeste, Total_de_medusas_eliminadas, posicion_x_de_jugador, posicion_y_de_jugador):
-        if Total_de_medusas_eliminadas >= 100 and self.rey_medusa_eliminada == False:
+        if Total_de_medusas_eliminadas >= 100 and self.rey_medusa_eliminado == False and self.Vida > 0:
             if self.Destino_Aleatorio is None or self.rey_medusa_posicion.collidepoint(self.Destino_Aleatorio):
                 self.Destino_X_Aleatorio = random.randint(Limite_Oeste, Limite_Este)
                 self.Destino_Y_Aleatorio = random.randint(Limite_Norte, Limite_Sur)
@@ -108,8 +122,7 @@ class Rey_Medusa:
                 self.Vida -= 1
                 self.Tiempo_para_volver_a_resivir_daño = 1000
             if self.Vida <= 0:      
-                self.rey_medusa_eliminada = True
-                self.Sonido_de_eliminacion.play(1)
+                self.rey_medusa_eliminado = True
                 
             if self.Electrocutando == True and evento_1 == False:
                 if (keys in [pygame.K_d, pygame.K_RIGHT]) and self.rey_medusa_posicion.x < Limite_Este:
@@ -126,7 +139,7 @@ class Rey_Medusa:
                 else: return
                     
     def Ataque_de_rey_medusa(self):
-        if self.rey_medusa_eliminada == False:       
+        if self.rey_medusa_eliminado == False:       
             if self.Tiempo_sin_electrocutar < 1500 and self.Electrocutando == False:
                 self.Tiempo_sin_electrocutar += 1
         
@@ -138,7 +151,7 @@ class Rey_Medusa:
         
     def dibujar_rey_medusa(self, keys, pantalla, Total_de_medusas_eliminadas, opciones_de_administrador_activadas):
         if Total_de_medusas_eliminadas >= 100:
-            if self.rey_medusa_eliminada == False: 
+            if self.rey_medusa_eliminado == False: 
                 self.update_hitbox()      
                 #Dibujar sprite de rey medusa corespondiente
                 if self.Electrocutando == False:
@@ -151,6 +164,9 @@ class Rey_Medusa:
                   
                 if keys[pygame.K_F3] and opciones_de_administrador_activadas == True:
                     pygame.draw.rect(pantalla, (0, 0, 225), self.hitbox, 2)  # Dibuja la hitbox para visualizarla  
+            else:
+                pantalla.blit(self.sprite_de_rey_medusa_A, self.rey_medusa_posicion)                
+             
                     
 
                     

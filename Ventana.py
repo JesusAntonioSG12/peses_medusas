@@ -46,7 +46,7 @@ medusa = Medusa()
 medusa_azul = Medusa_Azul()
 medusa_verde = Medusa_Verde()
 medusa_morada = Medusa_Morada()
-rey_medusa = Rey_Medusa()
+rey_medusa = Rey_Medusa(Partida_guardada["Vida_de_rey_medusa"])
 
 pez = Jugador(1, Partida_guardada["Vida_del_jugador"])
 
@@ -55,12 +55,13 @@ corazon = Corazon(pez.Vida)
 burbuja = Burbuja()
 
 modo_pausa = False
+audio_jefe_reproducido = False
 
 def handle_events():
     global modo_pausa
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            save_game({"Total_de_medusas_eliminadas": get_total_medusas(), "Vida_del_jugador": pez.Vida}, 'savefile.json')
+            save_game({"Total_de_medusas_eliminadas": get_total_medusas(), "Vida_del_jugador": pez.Vida, "Vida_de_rey_medusa": rey_medusa.Vida}, 'savefile.json')
             
             pygame.quit()
             sys.exit()
@@ -71,23 +72,23 @@ def handle_events():
                 
         # Pasar evento a check_collision para asegurar que solo ocurre una vez por pulsación
             if event.key in [pygame.K_SPACE, pygame.K_KP_0]:
-                Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, event.key, get_total_medusas(), fondo)
-audio_jefe_reproducido = False
+                Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
 
 def update_game():
     global audio_jefe_reproducido
     if not modo_pausa:
         # Verifica si get_total_medusas() alcanza un valor específico y cambia el audio
         if get_total_medusas() == 100 and not audio_jefe_reproducido:  # Cambia "100" por el número deseado
-            pygame.mixer.music.load("Musica/audio_jefe1.wav")
-            pygame.mixer.music.play()
-            audio_jefe_reproducido = True
+            if rey_medusa.Vida > 0:
+                pygame.mixer.music.load("Musica/audio_jefe1.wav")
+                pygame.mixer.music.play()
+                audio_jefe_reproducido = True
         
-        Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas(), fondo)
+        Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
         Mover_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, pygame.key.get_pressed(), get_total_medusas())
         Ataque_de_NPCS(medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, pez, get_total_medusas())
         Checar_vida_de_jugadores(pez)
-
+        
         
 def render_game():
     fondo.blit(fondo_imagen_1, (0, 0))
@@ -113,9 +114,9 @@ sonido_fondo_2.play(-1)
 pygame.mixer.music.load("Musica/audio1.wav")
 pygame.mixer.music.play(-1)
 
-
 def main():
     while True:
+        print(rey_medusa.Vida)
         get_total_medusas()
         pygame.time.set_timer(pygame.USEREVENT, 100)
         handle_events()
@@ -127,11 +128,21 @@ def main():
             pygame.display.update()
         
         if pez.Vida <= 0:
-            json.dump({"Total_de_medusas_eliminadas": 0,"Vida_del_jugador": 5}, open('savefile.json', 'w'))
+            json.dump({"Total_de_medusas_eliminadas": 0,"Vida_del_jugador": 5, "Vida_de_rey_medusa": 100}, open('savefile.json', 'w'))
 
             if pez.posicion_de_jugador.y <= 1000:
                 pez.posicion_de_jugador.y += 2 
             else:
+                pygame.quit()
+                sys.exit() 
+        elif rey_medusa.rey_medusa_eliminado == True:
+            rey_medusa.mover_rey_medusa(1.25, 0, 0, 0, 0)           
+            medusa.mover_medusa(3, medusa.medusa_posicion.x, -400, 0, 0, 0)
+            medusa_azul.mover_medusa(3, medusa_azul.medusa_azul_posicion.x, -400, 0, 0, 0)
+            medusa_verde.mover_medusa(3, medusa_verde.medusa_verde_posicion.x, -400, 0, 0, 0)
+            medusa_morada.mover_medusa_morada(3, medusa_morada.medusa_morada_posicion.x, -400, 0, 0, 0)
+            if rey_medusa.rey_medusa_posicion.y == 2000:
+                json.dump({"Total_de_medusas_eliminadas": 0,"Vida_del_jugador": 5, "Vida_de_rey_medusa": 100}, open('savefile.json', 'w'))
                 pygame.quit()
                 sys.exit()
 Ventana_de_inicio(fondo_imagen_de_inicio, fondo)

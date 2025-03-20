@@ -1,6 +1,6 @@
 from VentanaCarpet import Constantes_de_pantalla
 
-def Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, keys, Total_de_medusas_eliminadas, pantalla):       
+def Checar_coliciones_de_entidades(pez, medusa, medusa_azul, medusa_verde, medusa_morada, rey_medusa, burbuja, keys, Total_de_medusas_eliminadas):       
         
         # Verifica la colisión entre el jugador y la medusa
         medusa.check_collision(keys, pez.Cabeza_hitbox, Constantes_de_pantalla.LIMITE_NORTE, Constantes_de_pantalla.LIMITE_SUR, Constantes_de_pantalla.LIMITE_ESTE, Constantes_de_pantalla.LIMITE_OESTE, pez.Recibiendo_daño)

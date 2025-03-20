@@ -71,7 +71,7 @@ class Jugador:
             self.Cabeza_hitbox.x = self.posicion_de_jugador.x - 1
         self.Cabeza_hitbox.y = self.posicion_de_jugador.y + 20
         
-    def aplicar_dano(self, daño_por_aplicar, empuje, keys, tiempo_rsiviendo_daño = 10): 
+    def aplicar_dano(self, daño_por_aplicar, empuje, keys): 
             self.Vida -= daño_por_aplicar 
             # Empujón lateral
             if keys[pygame.K_d] or keys[pygame.K_RIGHT]:    
@@ -93,7 +93,7 @@ class Jugador:
     def check_collision(self, keys, Total_de_medusas_eliminadas, medusa_hitbox, medusa_electrocutando, medusa_azul_hitbox, medusa_azul_electrocutando, medusa_verde_hitbox, medusa_verde_electrocutando, medusa_morada_hitbox, medusa_morada_electrocutando, rey_medusa_hitbox, rey_medusa_electrocutando, burbuja_hitbox, Burbuja_tipo):
         if self.Recibiendo_daño == False:
             if medusa_hitbox and ((self.hitbox.colliderect(medusa_hitbox)) or (self.Cabeza_hitbox.colliderect(medusa_hitbox))) and medusa_electrocutando:
-                self.aplicar_dano(1, 25, keys, 2)
+                self.aplicar_dano(1, 25, keys)
                 self.Recibiendo_daño = True
                 self.sonido_electrocucion_1.play(0) 
                 self.sonido_electrocucion_3.play(0)  
